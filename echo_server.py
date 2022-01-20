@@ -37,7 +37,6 @@ def main():
         data_received = conn.recv(BUFFER_SIZE)
         time.sleep(0.5)
         conn.sendall(data_received)
-        # TODO: who closes the connection child or parent?
         
         conn.close()
 
