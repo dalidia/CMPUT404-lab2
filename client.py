@@ -8,7 +8,7 @@ BUFFER_SIZE = 4096
 def main():
     # creates a new socket
     try:
-        s = socket.socket(socket.AF_INET)
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         print("Socket was created")
     except OSError as e:
         print("There was an error creating the socket", e)
