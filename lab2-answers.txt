@@ -1,0 +1,7 @@
+1. We specify it by giving the socket the type of socket.SOCK_STREAM.
+2. The server in Python must perform the sequence socket(), bind(), listen(), and accept() whereas the client only needs socket() and connect().
+Overall, the client sends/request connections to the server whereas the server waits for requests to send connections. 
+3. We use socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) to control the socket's behavior and 
+4. We get port number, host id and client id.
+5. An empty byte string is sent to indicate that all the HTTP request was sent.
+6. https://github.com/dalidia/CMPUT404-lab2

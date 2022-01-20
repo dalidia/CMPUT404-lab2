@@ -1,4 +1,5 @@
 import socket
+from multiprocessing import Process
 
 HOST = ''
 PORT = 8001
@@ -25,7 +26,9 @@ def main():
 
     # Make socket to constantly listen to connections
     while True:
+        print("HERE")
         conn, address = s.accept()
+        print("another")
         # fetch data sent to main server
         data_to_send = conn.recv(BUFFER_SIZE)
 
@@ -46,23 +49,29 @@ def main():
         final_address = (final_host, final_port)
         proxy_end.connect(final_address)
 
-        # proxy sends data
-        print(f"Send respective data to {final_host}")
-        proxy_end.sendall(data_to_send)
+        process = Process(target=handle_connections, args=(conn, proxy_end, data_to_send, final_host, final_buffer_size))
+        # to execute process in the background
+        process.daemon = True
+        process.start()
 
-        proxy_end.shutdown(socket.SHUT_WR)
+def handle_connections(conn, proxy_end, data_to_send, final_host, final_buffer_size):
+    # proxy sends data
+    print(f"Send respective data to {final_host}")
+    proxy_end.sendall(data_to_send)
 
-        # check for incoming data greater than the buffer size
-        all_data = b''
-        while True:
-            data = proxy_end.recv(final_buffer_size)
-            if not data:
-                break
-            all_data += data
+    proxy_end.shutdown(socket.SHUT_WR)
 
-        proxy_end.close()
+    # check for incoming data greater than the buffer size
+    all_data = b''
+    while True:
+        data = proxy_end.recv(final_buffer_size)
+        if not data:
+            break
+        all_data += data
 
-        conn.sendall(all_data)
-        conn.close()
+    proxy_end.close()
+
+    conn.sendall(all_data)
+    conn.close()
 
 main()
